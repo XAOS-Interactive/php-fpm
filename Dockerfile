@@ -1,6 +1,6 @@
 FROM php:8.0-fpm
 
-LABEL maintainer="Vincent Letourneau <vincent@nanoninja.com>"
+LABEL maintainer="XAOS Interactive <docker@xaosia.com>"
 
 RUN apt-get update && apt-get upgrade -y \
     && apt-get install -y \
@@ -52,6 +52,7 @@ RUN apt-get update && apt-get upgrade -y \
     && docker-php-ext-install ldap \
     && docker-php-ext-configure zip \
     && docker-php-ext-install zip \
+    && docker-php-ext-install json \
     && CFLAGS="$CFLAGS -D_GNU_SOURCE" docker-php-ext-install sockets \
     && pecl install xmlrpc-1.0.0RC3 && docker-php-ext-enable xmlrpc \
     && pecl install xdebug && docker-php-ext-enable xdebug \
@@ -64,3 +65,6 @@ RUN apt-get update && apt-get upgrade -y \
     && apt-get autoremove --purge -y && apt-get autoclean -y && apt-get clean -y \
     && rm -rf /var/lib/apt/lists/* \
     && rm -rf /tmp/* /var/tmp/*
+
+# Install Composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin/ --filename=composer
