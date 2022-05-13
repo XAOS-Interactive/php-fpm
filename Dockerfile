@@ -1,7 +1,8 @@
 FROM php:7.4.10-fpm
 
-LABEL maintainer="Vincent Letourneau <vincent@nanoninja.com>"
+LABEL maintainer="XAOS Interactive <docker@xaosia.com>"
 
+# Install common php components
 RUN apt-get update && apt-get upgrade -y \
     && apt-get install -y \
     g++ \
@@ -54,13 +55,17 @@ RUN apt-get update && apt-get upgrade -y \
     && docker-php-ext-install ldap \
     && docker-php-ext-configure zip \
     && docker-php-ext-install zip \
+    && docker-php-ext-install json \
     && pecl install xdebug && docker-php-ext-enable xdebug \
     && pecl install memcached && docker-php-ext-enable memcached \
     && pecl install mongodb && docker-php-ext-enable mongodb \
     && pecl install redis && docker-php-ext-enable redis \
     && yes '' | pecl install imagick && docker-php-ext-enable imagick \
     && docker-php-source delete \
-    && apt-get remove -y g++ wget \
+    && apt-get remove -y g++ \
     && apt-get autoremove --purge -y && apt-get autoclean -y && apt-get clean -y \
     && rm -rf /var/lib/apt/lists/* \
     && rm -rf /tmp/* /var/tmp/*
+
+# Install Composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin/ --filename=composer
